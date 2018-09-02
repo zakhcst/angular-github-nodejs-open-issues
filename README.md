@@ -1,4 +1,11 @@
 # AngularGithubRepos
+An Angular 6 project.
+Makes HTTP requests to NodeJs github repo and on click shows the open issues.
+Includes the standard services tests and component's unit and integration tests 
+The API is limited to 60 requests per hour.
+The project is hosted in Firebase.
+
+
 
 This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 6.0.5.
 
