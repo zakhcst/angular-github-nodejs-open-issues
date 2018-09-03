@@ -7,9 +7,10 @@
   </h5>
 </div>
 
-
 <ul>
-  <span *ngIf="loadingRepos === true">loading repos...</span>
+  <span *ngIf="loadingRepos === true">
+    loading repositories...
+  </span>
   <li *ngFor="let repo of repos | async">
     <span (click)="toggleOpenIssue(repo.name)">{{repo.name}}</span>
     <span *ngIf="showIssues[repo.name]">

@@ -2,15 +2,12 @@ import {
   HttpClientTestingModule,
   HttpTestingController
 } from '@angular/common/http/testing';
-import { TestBed, async, fakeAsync, inject, tick } from '@angular/core/testing';
+import { TestBed, async } from '@angular/core/testing';
 import { AppComponent } from './app.component';
-import { HttpClientModule } from '@angular/common/http';
-import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient } from '@angular/common/http';
 import { ApiEndPoints } from './api-end-points';
 import { Repo } from './interfaces/repo';
 import { Issue } from './interfaces/issue';
-
-// import { GetNodejsReposService } from './services/get-nodejs-repos.service';
 
 describe('AppComponent', () => {
   let httpClient: HttpClient;
@@ -71,7 +68,6 @@ describe('AppComponent', () => {
     expect(req.request.method).toEqual('GET');
 
     // Respond with mock data, causing Observable to resolve.
-    // Subscribe callback asserts that correct data was returned.
     req.flush(reposSampleData);
 
     // Finally, assert that there are no outstanding requests.
@@ -104,7 +100,6 @@ describe('AppComponent', () => {
     expect(requestIssues.request.method).toEqual('GET');
 
     // Respond with mock data, causing Observable to resolve.
-    // Subscribe callback asserts that correct data was returned.
     requestIssues.flush(openIssuesSample);
 
     // Finally, assert that there are no outstanding requests.
