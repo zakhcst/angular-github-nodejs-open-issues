@@ -76,7 +76,7 @@ module.exports = ""
 /*! no static exports found */
 /***/ (function(module, exports) {
 
-module.exports = "<div style=\"text-align:center\">\n  <h3>\n    Welcome to Github NodeJS open issues!\n  </h3>\n  <h5>\n    (limited to 60 requests per hour)\n  </h5>\n</div>\n\n\n<ul>\n  <span *ngIf=\"loadingRepos === true\">loading repos...</span>\n  <li *ngFor=\"let repo of repos | async\">\n    <span (click)=\"toggleOpenIssue(repo.name)\">{{repo.name}}</span>\n    <span *ngIf=\"showIssues[repo.name]\">\n      <ul>\n        <span [ngSwitch]=\"!!openIssues[repo.name]\">\n          <span *ngSwitchCase=\"true\">\n            <span>Open issues: {{openIssues[repo.name].length}}</span>\n            <li *ngFor=\"let openIssue of openIssues[repo.name]\">\n              <sub *ngIf=\"openIssue\">{{openIssue.title}}</sub>\n            </li>\n          </span>\n          <span *ngSwitchDefault>\n            loading open issues...\n          </span>\n        </span>\n      </ul>\n    </span>\n  </li>\n</ul>\n"
+module.exports = "<div style=\"text-align:center\">\n  <h3>\n    Welcome to Github NodeJS open issues!\n  </h3>\n  <h5>\n    (limited to 60 requests per hour)\n  </h5>\n</div>\n\n<ul>\n  <span *ngIf=\"loadingRepos === true\">\n    loading repositories...\n  </span>\n  <li *ngFor=\"let repo of repos | async\">\n    <span (click)=\"toggleOpenIssue(repo.name)\">{{repo.name}}</span>\n    <span *ngIf=\"showIssues[repo.name]\">\n      <ul>\n        <span [ngSwitch]=\"!!openIssues[repo.name]\">\n          <span *ngSwitchCase=\"true\">\n            <span>Open issues: {{openIssues[repo.name].length}}</span>\n            <li *ngFor=\"let openIssue of openIssues[repo.name]\">\n              <sub *ngIf=\"openIssue\">{{openIssue.title}}</sub>\n            </li>\n          </span>\n          <span *ngSwitchDefault>\n            loading open issues...\n          </span>\n        </span>\n      </ul>\n    </span>\n  </li>\n</ul>\n"
 
 /***/ }),
 
@@ -119,7 +119,11 @@ var AppComponent = /** @class */ (function () {
         this.showIssues = {};
         this.loadingRepos = false;
         this.loadingRepos = true;
-        this.repos = _repos.nodejsRepos$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (_) { return _this.loadingRepos = false; }));
+        this.repos = _repos.nodejsRepos$.pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["tap"])(function (_) { return _this.loadingRepos = false; }), Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["catchError"])(function (err) {
+            _this.errorResponse = err;
+            console.log('ERROR repos:', err);
+            return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["throwError"])(err);
+        }));
         console.log('AppComponent constructed');
     }
     AppComponent.prototype.ngOnInit = function () { };
@@ -128,14 +132,13 @@ var AppComponent = /** @class */ (function () {
         this.showIssues[repoName] = !this.showIssues[repoName];
         if (this.showIssues[repoName] && !this.openIssues[repoName]) {
             this._openIssues.getRepoIssues$(repoName)
-                .pipe(Object(rxjs_operators__WEBPACK_IMPORTED_MODULE_4__["catchError"])(function (err) {
-                console.log('ERROR:', repoName);
+                .subscribe(function (data) {
+                _this.openIssues[repoName] = data;
+            }, function (err) {
+                _this.errorResponse = err;
+                console.log('ERROR issues:', repoName);
                 console.log(err);
                 return Object(rxjs__WEBPACK_IMPORTED_MODULE_3__["throwError"])(err);
-            }))
-                .subscribe(function (data) {
-                console.log('Toggled issue data received', data);
-                _this.openIssues[repoName] = data;
             });
         }
     };
@@ -226,7 +229,6 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-// import { share, tap } from 'rxjs/operators';
 var GetNodejsRepoOpenIssuesService = /** @class */ (function () {
     function GetNodejsRepoOpenIssuesService(_http, _api) {
         this._http = _http;
@@ -234,17 +236,7 @@ var GetNodejsRepoOpenIssuesService = /** @class */ (function () {
     }
     GetNodejsRepoOpenIssuesService.prototype.getRepoIssues$ = function (repoName) {
         var issueUrl = this._api.gitHubNodejsRepoOpenIssuesUrl.replace('reponame', repoName);
-        console.log('getRepoIssues$', repoName);
         return this._http.get(issueUrl);
-        // .pipe(
-        //   tap(_ => {
-        //     console.log(`repos: ${_}`);
-        //     _.forEach(element => {
-        //       console.log(element);
-        //     });
-        //   }),
-        //   share()
-        // );
     };
     GetNodejsRepoOpenIssuesService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
@@ -284,21 +276,11 @@ var __metadata = (undefined && undefined.__metadata) || function (k, v) {
 
 
 
-// import { share, tap, catchError } from 'rxjs/operators';
 var GetNodejsReposService = /** @class */ (function () {
     function GetNodejsReposService(_http, _api) {
         this._http = _http;
         this._api = _api;
         this.nodejsRepos$ = _http.get(this._api.gitHubNodejsReposUrl);
-        // .pipe(
-        // tap(_ => {
-        //   console.log(`repos: ${_}`);
-        //   _.forEach(element => {
-        //     console.log(element);
-        //   });
-        // }),
-        // share()
-        // );
     }
     GetNodejsReposService = __decorate([
         Object(_angular_core__WEBPACK_IMPORTED_MODULE_0__["Injectable"])({
