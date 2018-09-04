@@ -16,10 +16,19 @@ export class AppComponent implements OnInit {
   openIssues = {};
   showIssues = {};
   loadingRepos: Boolean = false;
+  errorResponse: any;
+
 
   constructor(private _repos: GetNodejsReposService, private _openIssues: GetNodejsRepoOpenIssuesService) {
     this.loadingRepos = true;
-    this.repos = _repos.nodejsRepos$.pipe(tap(_ => this.loadingRepos = false)) ;
+    this.repos = _repos.nodejsRepos$.pipe(
+      tap(_ => this.loadingRepos = false),
+      catchError(err => {
+        this.errorResponse = err;
+        console.log('ERROR repos:', err);
+        return throwError(err);
+      })
+    );
     console.log('AppComponent constructed');
   }
 
@@ -29,16 +38,14 @@ export class AppComponent implements OnInit {
     this.showIssues[repoName] = !this.showIssues[repoName];
     if (this.showIssues[repoName] && !this.openIssues[repoName]) {
       this._openIssues.getRepoIssues$(repoName)
-      .pipe(
-        catchError(err => {
-            console.log('ERROR:', repoName);
-            console.log(err);
-            return throwError(err);
-          })
-        )
         .subscribe(data => {
-          console.log('Toggled issue data received', data);
           this.openIssues[repoName] = data;
+        },
+        (err) => {
+          this.errorResponse = err;
+          console.log('ERROR issues:', repoName);
+          console.log(err);
+          return throwError(err);
         }
       );
     }
