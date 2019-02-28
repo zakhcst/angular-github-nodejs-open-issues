@@ -12,16 +12,18 @@ import { catchError, tap } from 'rxjs/operators';
 
 export class AppComponent implements OnInit {
   title = 'app';
-  repos;
   openIssues = {};
   showIssues = {};
-  loadingRepos: Boolean = false;
+  loadingRepos = false;
   errorResponse: any;
+  repos;
 
 
-  constructor(private _repos: GetNodejsReposService, private _openIssues: GetNodejsRepoOpenIssuesService) {
+  constructor(private _repos: GetNodejsReposService, private _openIssues: GetNodejsRepoOpenIssuesService) {}
+
+  ngOnInit() {
     this.loadingRepos = true;
-    this.repos = _repos.nodejsRepos$.pipe(
+    this.repos = this._repos.nodejsRepos$.pipe(
       tap(_ => this.loadingRepos = false),
       catchError(err => {
         this.errorResponse = err;
@@ -29,10 +31,7 @@ export class AppComponent implements OnInit {
         return throwError(err);
       })
     );
-    console.log('AppComponent constructed');
   }
-
-  ngOnInit() {}
 
   toggleOpenIssue(repoName): void {
     this.showIssues[repoName] = !this.showIssues[repoName];

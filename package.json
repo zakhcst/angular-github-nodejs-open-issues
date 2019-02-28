@@ -1,5 +1,5 @@
 {
-  "name": "angular-github-repos",
+  "name": "angular-github-nodejs-open-issues",
   "version": "0.0.0",
   "scripts": {
     "ng": "ng",
