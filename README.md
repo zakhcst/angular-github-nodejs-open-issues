@@ -22,5 +22,5 @@ Live instance is deployed to https://github-nodejs-issues.firebaseapp.com
 
 ### Preview
 
-![alt text](https://raw.githubusercontent.com/zakhcst/angular-github-nodejs-repos/master/src/assets/screen1.png)
-![alt text](https://raw.githubusercontent.com/zakhcst/angular-github-nodejs-repos/master/src/assets/screen2.png)
+![alt text](https://raw.githubusercontent.com/zakhcst/angular-github-nodejs-issues/master/src/assets/screen1.png)
+![alt text](https://raw.githubusercontent.com/zakhcst/angular-github-nodejs-issues/master/src/assets/screen2.png)
